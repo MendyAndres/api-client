@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  react-client:
+    build:
+      context: ../path/to/client ## HERE
+      dockerfile: ../api-client/frontend/Dockerfile
+    ports:
+      - 3000:3000
+    container_name: react-client
+    networks:
+      - api-client
+    volumes:
+      - "${CLIENT_VOLUME_PATH}/src:/usr/app/src"
+      - "${CLIENT_VOLUME_PATH}/public:/usr/app/public"
+    depends_on: 
+      - node-api
+    stdin_open: true
+    tty: true  
+
+  node-api:
+    build:
+      context: ../path/to/server ##HERE
+      dockerfile: ../api-client/backend/Dockerfile
+    ports:
+      - 8080:8080
+    container_name: node-api
+    networks:
+      - api-client
+    volumes:
+      - "${API_VOLUME_PATH}:/usr/src/app"
+  
+networks:
+  api-client:
+    driver: bridge
